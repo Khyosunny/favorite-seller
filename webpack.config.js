@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === 'development';
@@ -38,6 +39,13 @@ module.exports = (env, argv) => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './public/index.html',
+      }),
+      new ESLintPlugin({
+        extensions: ['ts', 'tsx'],
+        context: path.resolve(__dirname, 'src'),
+        emitWarning: true,
+        failOnError: false,
+        failOnWarning: false,
       }),
     ],
     devServer: {
