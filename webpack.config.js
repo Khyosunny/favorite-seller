@@ -42,10 +42,8 @@ module.exports = (env, argv) => {
       }),
       new ESLintPlugin({
         extensions: ['ts', 'tsx'],
-        context: path.resolve(__dirname, 'src'),
-        emitWarning: true,
-        failOnError: false,
-        failOnWarning: false,
+        context: path.resolve(__dirname, 'src'), // ESLint가 검사할 디렉토리
+        files: '**/*.{ts,tsx}', // ESLint가 검사할 파일 패턴
       }),
     ],
     devServer: {
@@ -56,6 +54,7 @@ module.exports = (env, argv) => {
       port: 3000,
       hot: true,
       open: true,
+      historyApiFallback: true,
     },
   };
 };
