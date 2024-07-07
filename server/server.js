@@ -42,13 +42,13 @@ http
     if (req.method == 'GET' && parsedUrl.pathname == '/') {
       const start = parseInt(queries.start) || 0;
       const list = products
-        .slice(start, start + 3)
+        .slice(start, start + 4)
         .map((v) => ({ ...v, favorite: favorite.has(v.seller) }));
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.write(JSON.stringify(list, null, 2));
       res.end();
       console.log(
-        `### Get all products list\n${JSON.stringify(list, null, 2)}`
+        `### Get all products list\n${JSON.stringify(list, null, 2)}`,
       );
       return;
     }
@@ -61,13 +61,13 @@ http
       const start = parseInt(queries.start) || 0;
       const list = products
         .filter((v) => v.seller === seller)
-        .slice(start, start + 3)
+        .slice(start, start + 4)
         .map((v) => ({ ...v, favorite: favorite.has(v.seller) }));
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.write(JSON.stringify(list, null, 2));
       res.end();
       console.log(
-        `### Get ${seller}'s products list\n${JSON.stringify(list, null, 2)}`
+        `### Get ${seller}'s products list\n${JSON.stringify(list, null, 2)}`,
       );
       return;
     }
@@ -98,7 +98,7 @@ http
       /^\/sellers\/([^\/]+):favorite\/?$/.test(parsedUrl.pathname)
     ) {
       const seller = decodeURIComponent(
-        parsedUrl.pathname.split('/')[2].split(':')[0]
+        parsedUrl.pathname.split('/')[2].split(':')[0],
       );
       favorite.add(seller);
       res.end();
@@ -111,7 +111,7 @@ http
       /^\/sellers\/([^\/]+):favorite\/?$/.test(parsedUrl.pathname)
     ) {
       const seller = decodeURIComponent(
-        parsedUrl.pathname.split('/')[2].split(':')[0]
+        parsedUrl.pathname.split('/')[2].split(':')[0],
       );
       favorite.delete(seller);
       res.end();
