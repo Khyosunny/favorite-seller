@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import useGetAllProductListInfiniteQuery from '../hooks/useGetAllProductListInfiniteQuery';
 import styled from 'styled-components';
 import useFavoriteController from '../hooks/useFavoriteController';
-import HeartFilledIcon from '../assets/heart-filled.svg';
-import HeartLinedIcon from '../assets/heart-lined.svg';
+import { HeartFilledIcon, HeartLinedIcon } from '../assets';
 
 const HomePage = () => {
   const navigate = useNavigate();
