@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import useGetAllProductListInfiniteQuery from '../hooks/useGetAllProductListInfiniteQuery';
 import styled from 'styled-components';
 import useFavoriteController from '../hooks/useFavoriteController';
-import heartFilledIcon from '../assets/heart-filled.svg';
-import heartLinedIcon from '../assets/heart-lined.svg';
+import HeartFilledIcon from '../assets/heart-filled.svg';
+import HeartLinedIcon from '../assets/heart-lined.svg';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -44,9 +44,9 @@ const HomePage = () => {
                 </p>
                 <p onClick={() => handleClickFavorite(product.seller)}>
                   {favoriteList.includes(product.seller) ? (
-                    <img src={heartFilledIcon} width={20} />
+                    <HeartFilledIcon width={20} fill="#ff5a5a" />
                   ) : (
-                    <img src={heartLinedIcon} width={20} />
+                    <HeartLinedIcon width={20} />
                   )}
                 </p>
               </SellerRow>

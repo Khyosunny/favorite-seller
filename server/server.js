@@ -42,7 +42,7 @@ http
     if (req.method == 'GET' && parsedUrl.pathname == '/') {
       const start = parseInt(queries.start) || 0;
       const list = products
-        .slice(start, start + 4)
+        .slice(start, start + 3)
         .map((v) => ({ ...v, favorite: favorite.has(v.seller) }));
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.write(JSON.stringify(list, null, 2));
@@ -61,7 +61,7 @@ http
       const start = parseInt(queries.start) || 0;
       const list = products
         .filter((v) => v.seller === seller)
-        .slice(start, start + 4)
+        .slice(start, start + 3)
         .map((v) => ({ ...v, favorite: favorite.has(v.seller) }));
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.write(JSON.stringify(list, null, 2));
