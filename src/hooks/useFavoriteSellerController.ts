@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import {
   InfiniteData,
   useMutation,
@@ -42,7 +43,7 @@ const useFavoriteSellerController = () => {
 
   const { mutate: postFavoriteSellerMutate } = useMutation<
     string,
-    unknown,
+    AxiosError,
     string,
     { previousProductList: ProductType[] | undefined }
   >({
@@ -67,7 +68,7 @@ const useFavoriteSellerController = () => {
 
   const { mutate: deleteFavoriteSellerMutate } = useMutation<
     string,
-    unknown,
+    AxiosError,
     string,
     { previousProductList: ProductType[] | undefined }
   >({
