@@ -3,12 +3,15 @@ import useGetAllProductListInfiniteQuery from '../hooks/useGetAllProductListInfi
 import styled from 'styled-components';
 import useFavoriteSellerController from '../hooks/useFavoriteSellerController';
 import { HeartFilledIcon, HeartLinedIcon } from '../assets';
+import { queryKeys } from '../apis/querykeys';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { allProductList, fetchNextPage, hasNextPage } =
     useGetAllProductListInfiniteQuery();
-  const { onToggleFavorite } = useFavoriteSellerController();
+  const { onToggleFavorite } = useFavoriteSellerController(
+    queryKeys.allProductList,
+  );
 
   const handleClickSellerName = (seller: string) => {
     navigate(`/seller/${seller}`);

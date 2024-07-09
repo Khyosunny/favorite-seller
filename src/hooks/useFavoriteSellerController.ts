@@ -7,13 +7,14 @@ import {
 import { deleteFavoriteSeller, postFavoriteSeller } from '../apis';
 import { ProductType, ResponseType } from '../types/products';
 
-const useFavoriteSellerController = () => {
+const useFavoriteSellerController = (queryKey: ReadonlyArray<unknown>) => {
   const queryClient = useQueryClient();
 
   const getPreviousProductList = () => {
-    const previousQueryData = queryClient.getQueryData<
-      InfiniteData<ResponseType<ProductType[]>>
-    >(['product', 'list']);
+    const previousQueryData =
+      queryClient.getQueryData<InfiniteData<ResponseType<ProductType[]>>>(
+        queryKey,
+      );
     const previousProductList =
       previousQueryData?.pages.flatMap((page) => page.result) || [];
 
@@ -22,7 +23,7 @@ const useFavoriteSellerController = () => {
 
   const updateFavoriteInCache = (newSeller: string, isFavorite: boolean) => {
     queryClient.setQueryData<InfiniteData<ResponseType<ProductType[]>>>(
-      ['product', 'list'],
+      queryKey,
       (oldData) => {
         if (!oldData) return oldData;
 
@@ -49,7 +50,7 @@ const useFavoriteSellerController = () => {
   >({
     mutationFn: postFavoriteSeller,
     onMutate: async (newSeller) => {
-      await queryClient.cancelQueries({ queryKey: ['product', 'list'] });
+      await queryClient.cancelQueries({ queryKey });
       const previousProductList = getPreviousProductList();
 
       updateFavoriteInCache(newSeller, true);
@@ -57,7 +58,7 @@ const useFavoriteSellerController = () => {
       return { previousProductList };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product', 'list'] });
+      queryClient.invalidateQueries({ queryKey });
     },
     onError: (err, newSeller, context) => {
       if (context?.previousProductList) {
@@ -74,7 +75,7 @@ const useFavoriteSellerController = () => {
   >({
     mutationFn: deleteFavoriteSeller,
     onMutate: async (sellerToDelete) => {
-      await queryClient.cancelQueries({ queryKey: ['product', 'list'] });
+      await queryClient.cancelQueries({ queryKey });
       const previousProductList = getPreviousProductList();
 
       updateFavoriteInCache(sellerToDelete, false);
@@ -82,7 +83,7 @@ const useFavoriteSellerController = () => {
       return { previousProductList };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product', 'list'] });
+      queryClient.invalidateQueries({ queryKey });
     },
     onError: (err, sellerToDelete, context) => {
       if (context?.previousProductList) {

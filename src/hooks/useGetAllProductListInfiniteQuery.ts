@@ -1,10 +1,11 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { getAllProductList } from '../apis';
 import { useMemo } from 'react';
+import { queryKeys } from '../apis/querykeys';
 
 const useGetAllProductListInfiniteQuery = () => {
   const { data, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery({
-    queryKey: ['product', 'list'],
+    queryKey: queryKeys.allProductList,
     queryFn: ({ pageParam = 0 }) => getAllProductList(pageParam),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextData ?? undefined,
