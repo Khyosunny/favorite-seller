@@ -1,12 +1,9 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { getAllProductList } from '../apis';
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { favoriteAtom } from '../state/products';
+import { useMemo } from 'react';
 
 const useGetAllProductListInfiniteQuery = () => {
-  const [favoriteList, setFavoriteList] = useRecoilState(favoriteAtom);
-  const { data, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery({
     queryKey: ['product', 'list'],
     queryFn: ({ pageParam = 0 }) => getAllProductList(pageParam),
     initialPageParam: 0,
@@ -14,24 +11,16 @@ const useGetAllProductListInfiniteQuery = () => {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {
-    if (!data || isLoading) return;
-    const sellerFavorites: { [key: string]: boolean } = {};
+  const allProductList = useMemo(
+    () => data.pages.flatMap((data) => data.result),
+    [data.pages],
+  );
 
-    data.pages.forEach((page) => {
-      page.result.forEach((item) => {
-        sellerFavorites[item.seller] = item.favorite;
-      });
-    });
-
-    const newFavoriteList = Object.keys(sellerFavorites).filter(
-      (seller) => sellerFavorites[seller],
-    );
-
-    setFavoriteList(newFavoriteList);
-  }, [data, isLoading, setFavoriteList]);
-
-  return { data, fetchNextPage, hasNextPage, favoriteList };
+  return {
+    allProductList,
+    fetchNextPage,
+    hasNextPage,
+  };
 };
 
 export default useGetAllProductListInfiniteQuery;

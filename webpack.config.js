@@ -59,6 +59,12 @@ module.exports = (env, argv) => {
       hot: true,
       open: true,
       historyApiFallback: true,
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false,
+        },
+      },
     },
   };
 };

@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import useGetAllProductListInfiniteQuery from '../hooks/useGetAllProductListInfiniteQuery';
 import styled from 'styled-components';
-import useFavoriteController from '../hooks/useFavoriteController';
+import useFavoriteSellerController from '../hooks/useFavoriteSellerController';
 import { HeartFilledIcon, HeartLinedIcon } from '../assets';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { data, fetchNextPage, hasNextPage, favoriteList } =
+  const { allProductList, fetchNextPage, hasNextPage } =
     useGetAllProductListInfiniteQuery();
-  const { postSellerMutate, deleteSellerMutate } = useFavoriteController();
+  const { onToggleFavorite } = useFavoriteSellerController();
 
   const handleClickSellerName = (seller: string) => {
     navigate(`/seller/${seller}`);
@@ -22,40 +22,33 @@ const HomePage = () => {
     fetchNextPage();
   };
 
-  const handleClickFavorite = (seller: string) => {
-    if (!data) return;
-    if (favoriteList.includes(seller)) {
-      deleteSellerMutate(seller);
-    } else {
-      postSellerMutate(seller);
-    }
-  };
-
   return (
     <Wrapper>
-      {data?.pages.map((page) => {
-        return page.result.map((product, index) => {
-          return (
-            <Item key={`${product.name}_${product.seller}_${index}`}>
-              <SellerRow>
-                <p onClick={() => handleClickSellerName(product.seller)}>
-                  {product.seller}
-                </p>
-                <p onClick={() => handleClickFavorite(product.seller)}>
-                  {favoriteList.includes(product.seller) ? (
-                    <HeartFilledIcon width={20} fill="#ff5a5a" />
-                  ) : (
-                    <HeartLinedIcon width={20} />
-                  )}
-                </p>
-              </SellerRow>
-              <p onClick={() => handleClickProductName(product.name)}>
-                {product.name}
+      {allProductList.map((product, index) => {
+        return (
+          <Item key={`${product.name}_${product.seller}_${index}`}>
+            <SellerRow>
+              <p onClick={() => handleClickSellerName(product.seller)}>
+                {product.seller}
               </p>
-              <p>{product.price.toLocaleString()}원</p>
-            </Item>
-          );
-        });
+              <p
+                onClick={() =>
+                  onToggleFavorite(product.seller, product.favorite)
+                }
+              >
+                {product.favorite ? (
+                  <HeartFilledIcon width={20} fill="#ff5a5a" />
+                ) : (
+                  <HeartLinedIcon width={20} />
+                )}
+              </p>
+            </SellerRow>
+            <p onClick={() => handleClickProductName(product.name)}>
+              {product.name}
+            </p>
+            <p>{product.price.toLocaleString()}원</p>
+          </Item>
+        );
       })}
       {hasNextPage && <Button onClick={handleClickMoreButton}>더보기</Button>}
     </Wrapper>

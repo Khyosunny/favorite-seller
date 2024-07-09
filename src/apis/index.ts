@@ -44,13 +44,13 @@ export async function getProductDetailByName(name: string) {
   return data;
 }
 
-export async function postSeller(seller: string) {
+export async function postFavoriteSeller(seller: string) {
   const { data } = await api.post(`/sellers/${seller}:favorite`);
 
   return data;
 }
 
-export async function deleteSeller(seller: string) {
+export async function deleteFavoriteSeller(seller: string) {
   const { data } = await api.delete(`/sellers/${seller}:favorite`);
 
   return data;
