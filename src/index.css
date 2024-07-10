@@ -125,3 +125,7 @@ button {
 input {
   outline: none;
 }
+
+#root {
+  background-color: #eee;
+}
