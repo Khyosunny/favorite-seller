@@ -1,28 +1,24 @@
 import styled from 'styled-components';
 import { ProductType } from '../types/products';
 import { HeartFilledIcon, HeartLinedIcon } from '../assets';
-import { useNavigate } from 'react-router-dom';
 
 interface Props {
   product: ProductType;
   onToggleFavorite: (sellerId: string, favorite: boolean) => void;
+  onClickProductName: (productName: string) => void;
+  onClickSellerName?: (seller: string) => void;
 }
 
-const ProductCard = ({ product, onToggleFavorite }: Props) => {
-  const navigate = useNavigate();
-
-  const handleClickSellerName = (seller: string) => {
-    navigate(`/seller/${seller}`);
-  };
-
-  const handleClickProductName = (name: string) => {
-    navigate(`/product/${name}`);
-  };
-
+const ProductCard = ({
+  product,
+  onToggleFavorite,
+  onClickSellerName,
+  onClickProductName,
+}: Props) => {
   return (
     <Card>
       <SellerRow>
-        <p onClick={() => handleClickSellerName(product.seller)}>
+        <p onClick={() => onClickSellerName?.(product.seller)}>
           {product.seller}
         </p>
         <p onClick={() => onToggleFavorite(product.seller, product.favorite)}>
@@ -39,7 +35,7 @@ const ProductCard = ({ product, onToggleFavorite }: Props) => {
           )}
         </p>
       </SellerRow>
-      <p onClick={() => handleClickProductName(product.name)}>{product.name}</p>
+      <p onClick={() => onClickProductName(product.name)}>{product.name}</p>
       <p>{product.price.toLocaleString()}원</p>
     </Card>
   );

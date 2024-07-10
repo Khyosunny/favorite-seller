@@ -1,12 +1,15 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { getAllProductList } from '../apis';
+import { getProductListBySeller } from '../apis';
+import { useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { queryKeys } from '../apis/querykeys';
 
-const useGetAllProductListInfiniteQuery = () => {
+const useGetProductListBySellerInfiniteQuery = () => {
+  const { seller } = useParams<{ seller: string }>();
   const { data, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery({
-    queryKey: queryKeys.allProductList,
-    queryFn: ({ pageParam = 0 }) => getAllProductList(pageParam),
+    queryKey: queryKeys.productListBySeller(seller ?? ''),
+    queryFn: ({ pageParam = 0 }) =>
+      getProductListBySeller(seller ?? '', pageParam),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextData ?? undefined,
     refetchOnWindowFocus: false,
@@ -24,4 +27,4 @@ const useGetAllProductListInfiniteQuery = () => {
   };
 };
 
-export default useGetAllProductListInfiniteQuery;
+export default useGetProductListBySellerInfiniteQuery;

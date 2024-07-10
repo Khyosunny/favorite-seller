@@ -1,9 +1,40 @@
 import styled from 'styled-components';
+import useGetProductListBySellerInfiniteQuery from '../hooks/useGetProductListBySellerInfiniteQuery';
+import useFavoriteSellerController from '../hooks/useFavoriteSellerController';
+import { queryKeys } from '../apis/querykeys';
+import ProductCard from '../components/ProductCard';
+import { useNavigate } from 'react-router-dom';
+import MoreButton from '../components/MoreButton';
 
 const ProductListBySellerPage = () => {
+  const navigate = useNavigate();
+  const { productList, fetchNextPage, hasNextPage } =
+    useGetProductListBySellerInfiniteQuery();
+  const { onToggleFavorite } = useFavoriteSellerController(
+    queryKeys.allProductList,
+  );
+
+  const onClickProductName = (productName: string) => {
+    navigate(`/product/${productName}`);
+  };
+
+  const handleClickMoreButton = () => {
+    fetchNextPage();
+  };
+
   return (
     <Wrapper>
-      <h1>ProductListBySellerPage</h1>
+      {productList.map((product, index) => {
+        return (
+          <ProductCard
+            key={`${product.name}_${product.seller}_${index}`}
+            product={product}
+            onToggleFavorite={onToggleFavorite}
+            onClickProductName={onClickProductName}
+          />
+        );
+      })}
+      {hasNextPage && <MoreButton onClick={handleClickMoreButton} />}
     </Wrapper>
   );
 };

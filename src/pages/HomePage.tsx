@@ -3,13 +3,24 @@ import styled from 'styled-components';
 import useFavoriteSellerController from '../hooks/useFavoriteSellerController';
 import { queryKeys } from '../apis/querykeys';
 import ProductCard from '../components/ProductCard';
+import { useNavigate } from 'react-router-dom';
+import MoreButton from '../components/MoreButton';
 
 const HomePage = () => {
-  const { allProductList, fetchNextPage, hasNextPage } =
+  const navigate = useNavigate();
+  const { productList, fetchNextPage, hasNextPage } =
     useGetAllProductListInfiniteQuery();
   const { onToggleFavorite } = useFavoriteSellerController(
     queryKeys.allProductList,
   );
+
+  const onClickSellerName = (seller: string) => {
+    navigate(`/seller/${seller}`);
+  };
+
+  const onClickProductName = (productName: string) => {
+    navigate(`/product/${productName}`);
+  };
 
   const handleClickMoreButton = () => {
     fetchNextPage();
@@ -17,16 +28,18 @@ const HomePage = () => {
 
   return (
     <Wrapper>
-      {allProductList.map((product, index) => {
+      {productList.map((product, index) => {
         return (
           <ProductCard
             key={`${product.name}_${product.seller}_${index}`}
             product={product}
             onToggleFavorite={onToggleFavorite}
+            onClickSellerName={onClickSellerName}
+            onClickProductName={onClickProductName}
           />
         );
       })}
-      {hasNextPage && <Button onClick={handleClickMoreButton}>더보기</Button>}
+      {hasNextPage && <MoreButton onClick={handleClickMoreButton} />}
     </Wrapper>
   );
 };
@@ -42,15 +55,4 @@ const Wrapper = styled.div`
   align-items: center;
   row-gap: 20px;
   padding: 20px;
-`;
-
-const Button = styled.div`
-  outline: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: black;
-  color: white;
-  padding: 6px 8px;
-  border-radius: 8px;
 `;
