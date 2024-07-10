@@ -21,7 +21,7 @@ const useFavoriteSellerController = (queryKey: ReadonlyArray<unknown>) => {
     return previousProductList;
   };
 
-  const updateFavoriteInCache = (newSeller: string, isFavorite: boolean) => {
+  const updateFavoriteInCache = (sellerId: string, isFavorite: boolean) => {
     queryClient.setQueryData<InfiniteData<ResponseType<ProductType[]>>>(
       queryKey,
       (oldData) => {
@@ -29,7 +29,7 @@ const useFavoriteSellerController = (queryKey: ReadonlyArray<unknown>) => {
 
         const newPages = oldData.pages.map((page) => {
           const newResult = page.result.map((item) => {
-            if (item.seller === newSeller) {
+            if (item.seller === sellerId) {
               return { ...item, favorite: isFavorite };
             }
             return item;
@@ -42,6 +42,26 @@ const useFavoriteSellerController = (queryKey: ReadonlyArray<unknown>) => {
     );
   };
 
+  const onMutate = async (sellerId: string, isFavorite: boolean) => {
+    await queryClient.cancelQueries({ queryKey });
+    const previousProductList = getPreviousProductList();
+
+    updateFavoriteInCache(sellerId, isFavorite);
+
+    return { previousProductList };
+  };
+
+  const onError = (
+    err: AxiosError,
+    sellerId: string,
+    context: { previousProductList: ProductType[] | undefined } | undefined,
+    isFavorite: boolean,
+  ) => {
+    if (context?.previousProductList) {
+      updateFavoriteInCache(sellerId, !isFavorite);
+    }
+  };
+
   const { mutate: postFavoriteSellerMutate } = useMutation<
     string,
     AxiosError,
@@ -49,22 +69,9 @@ const useFavoriteSellerController = (queryKey: ReadonlyArray<unknown>) => {
     { previousProductList: ProductType[] | undefined }
   >({
     mutationFn: postFavoriteSeller,
-    onMutate: async (newSeller) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousProductList = getPreviousProductList();
-
-      updateFavoriteInCache(newSeller, true);
-
-      return { previousProductList };
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
-    },
-    onError: (err, newSeller, context) => {
-      if (context?.previousProductList) {
-        updateFavoriteInCache(newSeller, false);
-      }
-    },
+    onMutate: (sellerId) => onMutate(sellerId, true),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey }),
+    onError: (err, sellerId, context) => onError(err, sellerId, context, true),
   });
 
   const { mutate: deleteFavoriteSellerMutate } = useMutation<
@@ -74,29 +81,16 @@ const useFavoriteSellerController = (queryKey: ReadonlyArray<unknown>) => {
     { previousProductList: ProductType[] | undefined }
   >({
     mutationFn: deleteFavoriteSeller,
-    onMutate: async (sellerToDelete) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousProductList = getPreviousProductList();
-
-      updateFavoriteInCache(sellerToDelete, false);
-
-      return { previousProductList };
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
-    },
-    onError: (err, sellerToDelete, context) => {
-      if (context?.previousProductList) {
-        updateFavoriteInCache(sellerToDelete, true);
-      }
-    },
+    onMutate: (sellerId) => onMutate(sellerId, false),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey }),
+    onError: (err, sellerId, context) => onError(err, sellerId, context, false),
   });
 
-  const onToggleFavorite = (seller: string, favorite: boolean) => {
+  const onToggleFavorite = (sellerId: string, favorite: boolean) => {
     if (favorite) {
-      deleteFavoriteSellerMutate(seller);
+      deleteFavoriteSellerMutate(sellerId);
     } else {
-      postFavoriteSellerMutate(seller);
+      postFavoriteSellerMutate(sellerId);
     }
   };
 
