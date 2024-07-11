@@ -3,15 +3,16 @@ import useGetProductListBySellerInfiniteQuery from '../hooks/useGetProductListBy
 import useFavoriteSellerController from '../hooks/useFavoriteSellerController';
 import { queryKeys } from '../apis/querykeys';
 import ProductCard from '../components/ProductCard';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MoreButton from '../components/MoreButton';
 
 const ProductListBySellerPage = () => {
+  const { seller } = useParams<{ seller: string }>();
   const navigate = useNavigate();
   const { productList, fetchNextPage, hasNextPage } =
-    useGetProductListBySellerInfiniteQuery();
+    useGetProductListBySellerInfiniteQuery(seller ?? '');
   const { onToggleFavorite } = useFavoriteSellerController(
-    queryKeys.allProductList,
+    queryKeys.productListBySeller(seller ?? ''),
   );
 
   const onClickProductName = (productName: string) => {

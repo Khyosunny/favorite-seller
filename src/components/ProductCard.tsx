@@ -5,7 +5,7 @@ import { HeartFilledIcon, HeartLinedIcon } from '../assets';
 interface Props {
   product: ProductType;
   onToggleFavorite: (sellerId: string, favorite: boolean) => void;
-  onClickProductName: (productName: string) => void;
+  onClickProductName?: (productName: string) => void;
   onClickSellerName?: (seller: string) => void;
 }
 
@@ -21,7 +21,7 @@ const ProductCard = ({
         <p onClick={() => onClickSellerName?.(product.seller)}>
           {product.seller}
         </p>
-        <p onClick={() => onToggleFavorite(product.seller, product.favorite)}>
+        <div onClick={() => onToggleFavorite(product.seller, product.favorite)}>
           {product.favorite ? (
             <IconBox>
               <HeartFilledIcon width={20} fill="#ff5a5a" />
@@ -33,9 +33,9 @@ const ProductCard = ({
               <Text>관심 셀러</Text>
             </IconBox>
           )}
-        </p>
+        </div>
       </SellerRow>
-      <p onClick={() => onClickProductName(product.name)}>{product.name}</p>
+      <p onClick={() => onClickProductName?.(product.name)}>{product.name}</p>
       <p>{product.price.toLocaleString()}원</p>
     </Card>
   );
@@ -45,7 +45,7 @@ export default ProductCard;
 
 const Card = styled.div`
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   padding: 20px;
   display: flex;
   flex-direction: column;

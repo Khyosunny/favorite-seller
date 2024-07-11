@@ -4,4 +4,9 @@ export const queryKeys = {
     ...queryKeys.allProductList,
     seller,
   ],
+  productDetailByName: (productName: string) => [
+    'product',
+    'detail',
+    productName,
+  ],
 };
