@@ -12,6 +12,16 @@ yarn server
 yarn start
 ```
 
+## Branch
+
+상태 관리 방식대로 브랜치를 나눕니다. (진행 중)
+
+### master
+
+- Pessimistic Updates
+
+<br />
+
 ---
 
 ### 전체 상품 목록 페이지
