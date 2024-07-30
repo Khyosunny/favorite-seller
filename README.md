@@ -12,11 +12,7 @@ yarn server
 yarn start
 ```
 
-## Branch
-
-상태 관리 방식대로 브랜치를 나눕니다. (진행 중)
-
-### master
+### master branch
 
 - Pessimistic Updates
 
